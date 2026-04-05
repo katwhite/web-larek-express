@@ -19,33 +19,7 @@ export const createProduct = async (
   next: NextFunction,
 ) => {
   try {
-    const {
-      title, image, category, description, price,
-    } = req.body;
-
-    // Валидация обязательных полей
-    if (!title || !image || !category) {
-      return next(new BadRequestError('Отсутствуют обязательные поля: title, image, category'));
-    }
-
-    // Валидация image структуры
-    if (!image.fileName || !image.originalName) {
-      return next(new BadRequestError('Поле image должно содержать fileName и originalName'));
-    }
-
-    // Валидация длины title
-    if (title.length < 2 || title.length > 30) {
-      return next(new BadRequestError('Длина поля title должна быть от 2 до 30 символов'));
-    }
-
-    const product = await Product.create({
-      title,
-      image,
-      category,
-      description,
-      price,
-    });
-
+    const product = await Product.create(req.body);
     return res.status(201).send({ data: product.toJSON() });
   } catch (error) {
     // Обработка ошибки дубликата title
