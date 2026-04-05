@@ -31,19 +31,19 @@ export const productSchema = new Schema<IProduct>({
       required: [true, 'Поле "originalName" должно быть заполнено'],
     },
   },
-    category: {
-      type: String,
-      required: [true, 'Поле "category" должно быть заполнено'],
-    },
-    description: {
-      type: String,
-      required: false,
-    },
-    price: {
-      type: Number,
-      required: false,
-      default: null,
-    },
+  category: {
+    type: String,
+    required: [true, 'Поле "category" должно быть заполнено'],
+  },
+  description: {
+    type: String,
+    required: false,
+  },
+  price: {
+    type: Number,
+    required: false,
+    default: null,
+  },
 });
 
 export default model<IProduct>('product', productSchema);

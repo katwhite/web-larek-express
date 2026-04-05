@@ -4,7 +4,9 @@ import Product from '../models/product';
 import BadRequestError from '../errors/bad-request-error';
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
-const { payment, email, phone, address, total, items } = req.body;
+  const {
+    payment, email, phone, address, total, items,
+  } = req.body;
   try {
     // Проверка наличия всех полей
     if (!payment || !email || !phone || !address || total === undefined || !items) {
@@ -32,7 +34,7 @@ const { payment, email, phone, address, total, items } = req.body;
     }
 
     // Проверка, что items не пустой и все ID валидны
-    const validItems = items.filter(id => id && typeof id === 'string' && id.length > 0);
+    const validItems = items.filter((id) => id && typeof id === 'string' && id.length > 0);
 
     if (validItems.length === 0) {
       return next(new BadRequestError('Items должен содержать хотя бы один валидный ID товара'));
