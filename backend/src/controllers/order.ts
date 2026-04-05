@@ -13,13 +13,12 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
       _id: { $in: items },
     });
 
-    if (products.length !== items.length) {
-      return next(new BadRequestError('Один или несколько товаров не найдены'));
+    if (products.filter((item) => item.price || item.price === 0).length !== items.length) {
+      return next(new BadRequestError('Один или несколько товаров не найдены или не продаются'));
     }
 
     // Проверка total
-    const calculatedTotal = products.reduce((sum, product) => sum + (product.price || 0), 0);
-
+    const calculatedTotal = products.reduce((sum, product) => sum + product.price!, 0);
     if (calculatedTotal !== total) {
       return next(new BadRequestError('Сумма заказа не соответствует стоимости товаров'));
     }

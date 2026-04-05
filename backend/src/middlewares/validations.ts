@@ -45,16 +45,7 @@ const orderBodySchema = Joi.object({
   total: Joi.number().required().messages({
     'string.empty': 'Поле "total" должно быть заполнено',
   }),
-  items: Joi.array()
-    .items(Joi.string().hex().length(24))
-    .min(1)
-    .required()
-    .messages({
-      'array.min': 'Список товаров не может быть пустым',
-      'string.hex': 'ID товара должен быть в hex формате',
-      'string.length': 'ID товара должен быть длиной 24 символа',
-      'any.required': 'Поле "items" обязательно для заполнения',
-    }),
+  items: Joi.array().min(1).required(),
 });
 
 export const validateCreateProductBody = celebrate({
