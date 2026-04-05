@@ -4,10 +4,40 @@ import Product from '../models/product';
 import BadRequestError from '../errors/bad-request-error';
 
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
-  const {
-    total, items,
-  } = req.body;
+const { payment, email, phone, address, total, items } = req.body;
   try {
+    // Проверка наличия всех полей
+    if (!payment || !email || !phone || !address || total === undefined || !items) {
+      return next(new BadRequestError('Отсутствуют обязательные поля'));
+    }
+
+    // Проверка типов
+    if (typeof total !== 'number') {
+      return next(new BadRequestError('Поле total должно быть числом'));
+    }
+
+    if (!Array.isArray(items)) {
+      return next(new BadRequestError('Items должен быть массивом'));
+    }
+
+    // Проверка payment enum
+    if (payment !== 'card' && payment !== 'online') {
+      return next(new BadRequestError('Поле payment должно быть "card" или "online"'));
+    }
+
+    // Проверка email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return next(new BadRequestError('Некорректный формат email'));
+    }
+
+    // Проверка, что items не пустой и все ID валидны
+    const validItems = items.filter(id => id && typeof id === 'string' && id.length > 0);
+
+    if (validItems.length === 0) {
+      return next(new BadRequestError('Items должен содержать хотя бы один валидный ID товара'));
+    }
+
     // Получение товаров из бд
     const products = await Product.find({
       _id: { $in: items },

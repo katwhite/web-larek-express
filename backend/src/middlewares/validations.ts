@@ -4,6 +4,7 @@ import { IProduct } from '../models/product';
 const createProductBodySchema = Joi.object<IProduct>({
   title: Joi.string().min(2).max(30).required()
     .messages({
+      'any.required': 'Поле "title" должно быть заполнено',
       'string.empty': 'Поле "title" должно быть заполнено',
       'string.min': 'Минимальная длина поля "title" - 2',
       'string.max': 'Максимальная длина поля "title" - 30',
@@ -17,6 +18,7 @@ const createProductBodySchema = Joi.object<IProduct>({
     }),
   }).required(),
   category: Joi.string().required().messages({
+    'any.required': 'Поле "category" должно быть заполнено',
     'string.empty': 'Поле "category" должно быть заполнено',
   }),
   description: Joi.string().optional(),
