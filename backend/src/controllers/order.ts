@@ -1,11 +1,13 @@
-import { Request, Response, NextFunction  } from 'express';
-import Product from '../models/product';
+import { Request, Response, NextFunction } from 'express';
 import { faker } from '@faker-js/faker';
+import Product from '../models/product';
 import BadRequestError from '../errors/bad-request-error';
 
-export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { payment, email, phone, address, total, items } = req.body;
+    const {
+      payment, email, phone, address, total, items,
+    } = req.body;
 
     // Проверка обязательных полей
     if (!payment || !email || !phone || !address || !total || !items) {
@@ -30,20 +32,12 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
     // Получение товаров из бд
     const products = await Product.find({
-      _id: { $in: items }
+      _id: { $in: items },
     });
 
     if (products.length !== items.length) {
       return next(new BadRequestError('Один или несколько товаров не найдены'));
     }
-
-    // // Проверка, что у всех товаров есть цена (не null)
-    // const productWithNullPrice = products.find(product => product.price === null || product.price === undefined);
-    // if (productWithNullPrice) {
-    //   return res.status(400).send({
-    //     message: `Товар "${productWithNullPrice.title}" не продается (цена не установлена)`
-    //   });
-    // }
 
     // Проверка total
     const calculatedTotal = products.reduce((sum, product) => sum + (product.price || 0), 0);
@@ -57,13 +51,14 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
     return res.status(201).send({
       id: orderId,
-      total: total
+      total,
     });
-
   } catch (error) {
     console.error('Ошибка при создании заказа:', error);
     return res.status(500).send({
-      message: 'Произошла ошибка при создании заказа'
+      message: 'Произошла ошибка при создании заказа',
     });
   }
 };
+
+export default createOrder;

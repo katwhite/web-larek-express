@@ -27,8 +27,13 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "celebrate": "^15.0.3",
+    "cors": "^2.8.6",
     "express": "^4.19.2",
+    "express-winston": "^4.2.0",
     "mongoose": "^8.3.2",
-    "validator": "^13.11.0"
+    "validator": "^13.11.0",
+    "winston": "^3.19.0"
   }
 }

@@ -4,9 +4,9 @@ import BadRequestError from '../errors/bad-request-error';
 import ConflictError from '../errors/conflict-error';
 
 export const getProducts = async (
-  req: Request,
+  _: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   Product.find({})
     .then((products) => res.send({ items: products, total: products.length }))
@@ -16,10 +16,12 @@ export const getProducts = async (
 export const createProduct = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
-    const { title, image, category, description, price } = req.body;
+    const {
+      title, image, category, description, price,
+    } = req.body;
 
     // Валидация обязательных полей
     if (!title || !image || !category) {
@@ -41,11 +43,10 @@ export const createProduct = async (
       image,
       category,
       description,
-      price
+      price,
     });
 
-    return res.status(201).send({ data: product });
-
+    return res.status(201).send({ data: product.toJSON() });
   } catch (error) {
     // Обработка ошибки дубликата title
     if (error instanceof Error && error.message.includes('E11000')) {
@@ -58,6 +59,6 @@ export const createProduct = async (
     }
 
     // Все остальные ошибки
-    next(error);
+    return next(error);
   }
 };
